@@ -39,8 +39,6 @@ if(demoTest){demoTest.addEventListener('click',()=>{
   const sync=document.querySelector('.last-sync'); if(sync)sync.textContent='Dados fictícios atualizados agora';
   demoTest.textContent='✓ Dados gerados'; setTimeout(()=>demoTest.textContent='🧪 Testar dados',1800);
 });}
-const seller=document.querySelector('.seller-filter');
-if(seller){seller.addEventListener('change',()=>{const label=document.querySelector('.bars').previousElementSibling?.querySelector('small');if(label)label.textContent=seller.value==='Todos os vendedores'?'Desempenho no período':'Desempenho de '+seller.value;});}
 const sellerSales={João:12420,Maria:14860,Carlos:9840,Ana:7560,Paulo:3972};
 function updateSellerComparison(){
   const selected=[...document.querySelector('#seller-filter').selectedOptions].map(o=>o.value).slice(0,3);
@@ -50,7 +48,16 @@ function updateSellerComparison(){
   const total=selected.reduce((sum,n)=>sum+sellerSales[n],0);
   box.innerHTML=selected.length<2?'<small style="color:var(--muted)">Selecione 2 ou 3 vendedores para comparar.</small>':('<strong style="font-size:12px">Participação nas vendas selecionadas</strong>'+selected.map(name=>{const pct=((sellerSales[name]/total)*100).toFixed(1);return `<div style="display:grid;grid-template-columns:55px 1fr 45px;gap:8px;align-items:center;font-size:11px"><b>${name}</b><div style="height:10px;background:#eef2ff;border-radius:8px;overflow:hidden"><div style="height:100%;width:${pct}%;background:var(--primary);border-radius:8px"></div></div><strong>${pct}%</strong></div>`}).join(''));
 }
-const seller=document.querySelector('#seller-filter'); if(seller){seller.addEventListener('change',updateSellerComparison);updateSellerComparison();}
+const seller=document.querySelector('#seller-filter');
+if(seller){
+  seller.addEventListener('change',()=>{
+    const selected=[...seller.selectedOptions].map(o=>o.value).slice(0,3);
+    const label=document.querySelector('.bars').previousElementSibling?.querySelector('small');
+    if(label) label.textContent=selected.length?'Desempenho de '+selected.join(', '):'Desempenho no período';
+    updateSellerComparison();
+  });
+  updateSellerComparison();
+}
 // Simulação de dados em tempo real: atualiza os indicadores a cada 30 segundos.
 setInterval(()=>{
   const values=[['R$ 48.652,80','R$ 56.431,20','R$ 43.918,50'],['1.284','1.462','1.108'],['R$ 37,89','R$ 38,60','R$ 39,62'],['18','12','24'],['7','5','11']];
