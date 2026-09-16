@@ -1,4 +1,4 @@
-const { Pool } = require("pg");
+rconst { Pool } = require("pg");
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -25,5 +25,5 @@ module.exports = async function handler(req, res) {
       conectado: false,
       mensagem: "Falha ao conectar ao banco"
     });
-  }
+  
 };
