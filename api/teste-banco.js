@@ -1,11 +1,13 @@
-rconst { Pool } = require("pg");
+import pg from "pg";
+
+const { Pool } = pg;
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: false
 });
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   try {
     const resultado = await pool.query(`
       SELECT
@@ -13,17 +15,17 @@ module.exports = async function handler(req, res) {
         NOW() AS horario
     `);
 
-    res.status(200).json({
+    return res.status(200).json({
       conectado: true,
       banco: resultado.rows[0].banco,
       horario: resultado.rows[0].horario
     });
   } catch (erro) {
-    console.error(erro);
+    console.error("Erro de conexão:", erro.message);
 
-    res.status(500).json({
+    return res.status(500).json({
       conectado: false,
-      mensagem: "Falha ao conectar ao banco"
+      mensagem: erro.message
     });
-  
-};
+  }
+}
